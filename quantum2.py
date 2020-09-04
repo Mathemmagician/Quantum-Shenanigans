@@ -11,7 +11,15 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
+        self.load_sounds()
         self.load_data()
+
+    def load_sounds(self):
+        pg.mixer.init()
+        pg.mixer.music.load("static/electro2.wav")
+        pg.mixer.music.set_volume(0.02)
+        pg.mixer.music.play(loops=-1)
+        self.split_sound = pg.mixer.Sound("static/roblox.wav")
 
     def load_data(self):
         pass
@@ -30,7 +38,7 @@ class Game:
         # game loop - set self.playing = False to end the game
         self.playing = True
         self.GAMESTEP = pg.USEREVENT + 1
-        pg.time.set_timer(self.GAMESTEP, 750)
+        pg.time.set_timer(self.GAMESTEP, 1000)
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
@@ -38,6 +46,8 @@ class Game:
             self.draw()
 
     def quit(self):
+        pg.mixer.music.stop()
+        pg.mixer.quit()
         pg.quit()
         sys.exit()
 
@@ -53,8 +63,8 @@ class Game:
 
     def draw(self):
         self.screen.fill(BGCOLOR)
-        self.draw_grid()
         self.all_sprites.draw(self.screen)
+        self.draw_grid()
         pg.display.flip()
 
     def events(self):
@@ -84,7 +94,10 @@ class Game:
         for player in self.players:
             player.collide_with_players()
 
-        print('sum', sum([player.power for player in self.players]))
+        #print('sum', sum([player.power for player in self.players]))
+        if sum([player.power for player in self.players]) > 1.05:
+            print([player.power for player in self.players])
+            pg.time.delay(5000)
 
 
     def show_start_screen(self):

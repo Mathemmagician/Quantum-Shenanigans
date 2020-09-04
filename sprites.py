@@ -27,6 +27,7 @@ class Player(pg.sprite.Sprite):
             self.x += dx
             self.y += dy-1 # split up
             Player(self.game, self.x, self.y+2, self.power)
+            self.game.split_sound.play()
 
         self.x = min(max(0, self.x), GRIDWIDTH-1)
         self.y = min(max(0, self.y), GRIDHEIGHT-1)
@@ -42,13 +43,9 @@ class Player(pg.sprite.Sprite):
         for player in self.game.players:
             if player == self:
                 continue
-            if self.x == player.x and self.y == player.y:
-                if self.id < player.id:
-                    self.update_power(delta = player.power)
-                    player.kill()
-                else:
-                    player.update_power(delta = self.power)
-                    self.kill()
+            if self.x == player.x and self.y == player.y and self.id < player.id:
+                self.update_power(delta = player.power)
+                player.kill()
 
     def update_power(self, coeff=1, delta=0):
         self.power = min(coeff * self.power + delta, 1)
@@ -83,3 +80,5 @@ class Wall(pg.sprite.Sprite):
     def update(self):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
+
+
