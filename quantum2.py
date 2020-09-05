@@ -1,6 +1,7 @@
 
 import pygame as pg
 import sys
+import os
 from settings import *
 from sprites import *
 
@@ -16,10 +17,10 @@ class Game:
 
     def load_sounds(self):
         pg.mixer.init()
-        pg.mixer.music.load("static/electro2.wav")
+        pg.mixer.music.load(os.path.join("static", "electro2.wav"))
         pg.mixer.music.set_volume(0.02)
         pg.mixer.music.play(loops=-1)
-        self.split_sound = pg.mixer.Sound("static/roblox.wav")
+        self.split_sound = pg.mixer.Sound(os.path.join("static", "roblox.wav"))
 
     def load_data(self):
         pass
