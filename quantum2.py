@@ -12,26 +12,29 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
-        self.load_sounds()
         self.load_data()
 
     def load_sounds(self):
         pg.mixer.init()
-        pg.mixer.music.load(os.path.join("static", "electro2.wav"))
+        pg.mixer.music.load(
+            os.path.join("static", "electro2.wav"))
         pg.mixer.music.set_volume(0.02)
         pg.mixer.music.play(loops=-1)
-        self.split_sound = pg.mixer.Sound(os.path.join("static", "roblox.wav"))
+        self.split_sound = pg.mixer.Sound(
+            os.path.join("static", "roblox.wav"))
+        self.split_sound.set_volume(0.1)
 
     def load_data(self):
-        pass
+        self.load_sounds()
 
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.players = pg.sprite.Group()
-        player = Player(self, 5, GRIDHEIGHT // 2)
-        #player = Player(self, 3, GRIDHEIGHT // 2)
+        self.items = pg.sprite.Group()
+        Player(self, 5, GRIDHEIGHT // 2)
+        Item(self)
         for x in range(10, 13):
             Wall(self, x, 5)
 
@@ -88,6 +91,8 @@ class Game:
             if event.type == self.GAMESTEP:
                 for wall in self.walls:
                     wall.move(dx=-1)
+                for item in self.items:
+                    item.move(dx=-1)
 
         for player in self.players:
             player.move(dx, dy)

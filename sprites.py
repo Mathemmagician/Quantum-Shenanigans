@@ -3,6 +3,7 @@ from settings import *
 import random
 
 class Player(pg.sprite.Sprite):
+
     idCounter = 0
 
     def __init__(self, game, x, y, power=1):
@@ -32,7 +33,6 @@ class Player(pg.sprite.Sprite):
         self.x = min(max(0, self.x), GRIDWIDTH-1)
         self.y = min(max(0, self.y), GRIDHEIGHT-1)
 
-
     def collide_with_walls(self, dx=0, dy=0):
         for wall in self.game.walls:
             if wall.x == self.x + dx and wall.y == self.y + dy:
@@ -47,6 +47,12 @@ class Player(pg.sprite.Sprite):
                 self.update_power(delta = player.power)
                 player.kill()
 
+    def collide_with_items(self):
+        for item in self.game.items:
+            if self.x == item.x and self.y == item.y:
+                self.update_power(delta = player.power)
+                player.kill()
+
     def update_power(self, coeff=1, delta=0):
         self.power = min(coeff * self.power + delta, 1)
         self.update_color()
@@ -57,6 +63,7 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
+
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -80,5 +87,45 @@ class Wall(pg.sprite.Sprite):
     def update(self):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
+
+
+class Item(pg.sprite.Sprite):
+    def __init__(self, game):
+        self.groups = game.all_sprites, game.items
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.boost = random.uniform(0, 1)
+        self.image.fill(BLUE * self.boost + RED * (1 - self.boost))
+        self.rect = self.image.get_rect()
+        self.x = GRIDWIDTH
+        self.y = random.randint(0, GRIDHEIGHT-1)
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
+
+    def move(self, dx=0):
+        self.x += dx
+        if self.x < 0:
+            self.kill()
+            Wall(self.game, GRIDWIDTH-1, random.randint(0, GRIDHEIGHT-1))
+
+    def update(self):
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
