@@ -25,6 +25,9 @@ class Game:
         self.split_sound = pg.mixer.Sound(
             os.path.join("static", "roblox.wav"))
         self.split_sound.set_volume(0.1)
+        self.coid_sound = pg.mixer.Sound(
+            os.path.join("static", "coin_flip.wav"))
+        self.coid_sound.set_volume(0.1)
 
     def load_data(self):
         self.load_sounds()

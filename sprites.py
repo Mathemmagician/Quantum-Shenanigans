@@ -22,6 +22,8 @@ class Player(pg.sprite.Sprite):
     def move(self, dx=0, dy=0):
         self.x += dx
         self.y += dy
+        self.collide_with_items()
+            
         if not self.collide_with_walls(dx, dy):
             self.x = min(max(0, self.x), GRIDWIDTH-1)
             self.y = min(max(0, self.y), GRIDHEIGHT-1)
@@ -30,7 +32,6 @@ class Player(pg.sprite.Sprite):
             Player(self.game, self.x, self.y+1, self.power/2)
             self.game.split_sound.play()
             self.kill()
-
 
 
     def collide_with_walls(self, dx=0, dy=0):
@@ -52,6 +53,8 @@ class Player(pg.sprite.Sprite):
             if self.x == item.x and self.y == item.y:
                 self.update_power(delta = item.boost)
                 item.kill()
+                self.game.coid_sound.play()
+                Item(self.game)
 
     def update_power(self, coeff=1, delta=0):
         self.power = coeff * self.power + delta
@@ -107,7 +110,8 @@ class Item(pg.sprite.Sprite):
         self.x += dx
         if self.x < 0:
             self.kill()
-            Wall(self.game, GRIDWIDTH-1, random.randint(0, GRIDHEIGHT-1))
+            Item(self.game)
+            Item(self.game)
 
     def update(self):
         self.rect.x = self.x * TILESIZE
