@@ -20,22 +20,22 @@ class Player(pg.sprite.Sprite):
         Player.idCounter += 1
 
     def move(self, dx=0, dy=0):
-        if not self.collide_with_walls(dx, dy): 
-            self.x += dx
-            self.y += dy
+        self.x += dx
+        self.y += dy
+        if not self.collide_with_walls(dx, dy):
+            self.x = min(max(0, self.x), GRIDWIDTH-1)
+            self.y = min(max(0, self.y), GRIDHEIGHT-1)
         else:
-            self.update_power(coeff=0.5)
-            self.x += dx
-            self.y += dy-1 # split up
-            Player(self.game, self.x, self.y+2, self.power)
+            Player(self.game, self.x, self.y-1, self.power/2)
+            Player(self.game, self.x, self.y+1, self.power/2)
             self.game.split_sound.play()
+            self.kill()
 
-        self.x = min(max(0, self.x), GRIDWIDTH-1)
-        self.y = min(max(0, self.y), GRIDHEIGHT-1)
+
 
     def collide_with_walls(self, dx=0, dy=0):
         for wall in self.game.walls:
-            if wall.x == self.x + dx and wall.y == self.y + dy:
+            if wall.x == self.x and wall.y == self.y:
                 return True
         return False
 
@@ -50,11 +50,11 @@ class Player(pg.sprite.Sprite):
     def collide_with_items(self):
         for item in self.game.items:
             if self.x == item.x and self.y == item.y:
-                self.update_power(delta = player.power)
-                player.kill()
+                self.update_power(delta = item.boost)
+                item.kill()
 
     def update_power(self, coeff=1, delta=0):
-        self.power = min(coeff * self.power + delta, 1)
+        self.power = coeff * self.power + delta
         self.update_color()
 
     def update_color(self):
