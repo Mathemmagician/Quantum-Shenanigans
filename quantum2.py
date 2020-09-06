@@ -11,7 +11,7 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
-        #pg.key.set_repeat(200, 1000)
+        pg.key.set_repeat(500,100)
         self.load_sounds()
         self.load_data()
 
@@ -39,9 +39,9 @@ class Game:
         # game loop - set self.playing = False to end the game
         self.playing = True
         self.GAMESTEP = pg.USEREVENT + 1
-        pg.time.set_timer(self.GAMESTEP, 1000)
+        pg.time.set_timer(self.GAMESTEP, 400)
         while self.playing:
-            self.clock.tick(1000//FPS)
+            self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
@@ -71,14 +71,14 @@ class Game:
 
     def events(self):
         # catch all events here
-        dx, dy = 0, 0
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
             if event.type == self.GAMESTEP:
                 for wall in self.walls:
                     wall.move(dx=-1)
-            
+
+        dx, dy = 0, 0
         key_input = pg.key.get_pressed()   
         if key_input[pg.K_LEFT]:
             dx+=-1
